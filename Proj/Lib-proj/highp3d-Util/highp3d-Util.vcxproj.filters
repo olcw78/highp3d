@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Src">
+      <UniqueIdentifier>{b9bc6d8f-690e-41aa-b230-33dc9b5d475a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Prv">
+      <UniqueIdentifier>{699ca914-79df-4dd6-89e0-dfc114799687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Pub">
+      <UniqueIdentifier>{b851b3cb-4d4d-4271-8532-0752fab3f8f0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Src\highp3d-Util\pub\hpMacro.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d-Util\pub\hpRandom.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d-Util\pub\hpASCII.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d-Util\pub\hpCast.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d-Util\pub\hpDebug.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d-Util\pub\hpString.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Src\highp3d-Util\prv\hpRandom.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Src\highp3d-Util\prv\hpASCII.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Src\highp3d-Util\prv\hpCast.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Src\highp3d-Util\pub\hpDebug.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Src\highp3d-Util\prv\hpString.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Src\highp3d-Util\pub\hpCast.inl">
+      <Filter>Src\Pub</Filter>
+    </None>
+    <None Include="..\..\..\Src\highp3d-Util\pub\hpDebug.inl">
+      <Filter>Src\Pub</Filter>
+    </None>
+    <None Include="..\..\..\Src\highp3d-Util\prv\hpString.inl">
+      <Filter>Src\Prv</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Src">
+      <UniqueIdentifier>{62a51d21-aa45-4ac9-b19a-8101b78d461e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Prv">
+      <UniqueIdentifier>{7328ce04-eee9-4b22-a664-bb9de04b0b85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Pub">
+      <UniqueIdentifier>{cc1e23af-bc41-4556-8304-23df2211b25a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dep">
+      <UniqueIdentifier>{fa21f0b5-9511-432a-8692-b428e37be7c5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Src\highp3d-View\prv\ViewMain.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Src\highp3d-View\prv\View.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Src\glad.c">
+      <Filter>dep</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Src\highp3d-View\pub\View.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Src">
+      <UniqueIdentifier>{4ee2e425-8fb6-4bff-a06a-4d4a90eb020c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Prv">
+      <UniqueIdentifier>{c1715017-c23b-4eb5-a3a3-f32c2fa86fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Pub">
+      <UniqueIdentifier>{32fbd16f-326f-40e8-907b-844e0104f01b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

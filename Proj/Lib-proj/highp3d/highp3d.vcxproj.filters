@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Src">
+      <UniqueIdentifier>{8f66e117-9451-4910-95c5-5c004b570a66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Prv">
+      <UniqueIdentifier>{c39971b7-698f-4d8d-8081-0a98b8f90d7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Pub">
+      <UniqueIdentifier>{3d7d41dd-9000-4bf8-afb8-952311c1e03d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpIEngineScript.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpEngineScriptHolder.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Src\highp3d\prv\hpEngineScriptHolder.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
