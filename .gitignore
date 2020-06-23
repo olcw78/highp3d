@@ -3,6 +3,10 @@
   *.tlog/
   .vs/
 
+  /Build
+  /Intermediate
+  /.vs
+
   *.pdb
   *.idb
   *.obj

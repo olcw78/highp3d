@@ -1,2 +1,0 @@
-C:\Dev\highp3d\Lib\highp3d-Util.pdb
-C:\Dev\highp3d\Intermediate\highp3d-Util.pdb
