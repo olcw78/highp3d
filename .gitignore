@@ -1,13 +1,9 @@
-  Build/
-  Intermediate/
-  *.tlog/
-  .vs/
+Build/
+Intermediate/
+*.tlog/
+.vs/
 
-  /Build
-  /Intermediate
-  /.vs
-
-  *.pdb
-  *.idb
-  *.obj
-  *.ilk
+*.pdb
+*.idb
+*.obj
+*.ilk
