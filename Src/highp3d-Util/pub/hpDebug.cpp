@@ -1,19 +1,20 @@
 #include "hpDebug.h"
 #include <iostream>
 #include <cassert>
+#include <string>
 
 namespace hp {
-void hpDebug::Trace(Trace_String func, Trace_String file, long line,
-                  Trace_String message) noexcept {
-  std::cout << func << ' [' << file << ' : ' << line << '] ' << message
-    << std::endl;
+void hpDebug::log(Trace_String message,
+                  bool is_append_info /*= true*/) noexcept {
+  std::cout << hpDebug::get_info_string(is_append_info) << message << std::endl;
 }
 
-bool hpDebug::Trace_Expr(Trace_String func, Trace_String file, long line,
-                       Trace_String message,
-                       std::function<bool()>&& expr) noexcept {
+bool
+hpDebug::log(Trace_String message,
+             bool expr,
+             bool is_append_info /*= true*/) noexcept {
   if (!expr) {
-    hpDebug::Trace(func, file, line, message);
+    hpDebug::log(message, expr, is_append_info);
     return true;
   }
   else {
@@ -21,17 +22,17 @@ bool hpDebug::Trace_Expr(Trace_String func, Trace_String file, long line,
   }
 }
 
-void hpDebug::Trace_Error(Trace_String func, Trace_String file, long line,
-                        Trace_String message) noexcept {
-  std::cerr << func << ' [' << file << ' : ' << line << '] ' << message
-    << std::endl;
+void hpDebug::err(Trace_String message,
+                  bool is_append_info /*= true*/) noexcept {
+  std::cerr << hpDebug::get_info_string(is_append_info) << message << std::endl;
 }
 
-bool hpDebug::Trace_Error_Expr(Trace_String func, Trace_String file,
-                             long line, Trace_String message,
-                             std::function<bool()>&& expr) noexcept {
+bool
+hpDebug::err(Trace_String message,
+             bool expr,
+             bool is_append_info /*= true*/) noexcept {
   if (!expr) {
-    hpDebug::Trace_Error(func, file, line, message);
+    hpDebug::err(message, expr, is_append_info);
     return true;
   }
   else {
@@ -39,47 +40,77 @@ bool hpDebug::Trace_Error_Expr(Trace_String func, Trace_String file,
   }
 }
 
-void hpDebug::Trace_Assert(Trace_String func, Trace_String file, long line,
-                         std::function<bool()>&& expr) noexcept {
+void hpDebug::check(std::function<bool()>&& expr, bool is_append_info /*= true*/) noexcept {
   if (expr) {
-    std::cerr << func << ' [' << file << ' : ' << line << '] ' << std::endl;
+    std::cerr << hpDebug::get_info_string(is_append_info) << std::endl;
     assert(true);
   }
 }
 
-void hpDebug::Trace_Assert_Message(Trace_String func, Trace_String file,
-                                 long line, Trace_String message,
-                                 std::function<bool()>&& expr) noexcept {
-  if (!expr) {
-    std::cerr << func << ' [' << file << ' : ' << line << '] ' << message
-      << std::endl;
-    assert(true);
-  }
-}
-
-void hpDebug::Trace_Assert_Final(Trace_String func, Trace_String file,
-                               long line, std::function<bool()>&& expr,
-                               std::function<void()>&& fin) noexcept {
-  if (!expr) {
-    std::cerr << func << ' [' << file << ' : ' << line << '] ' << std::endl;
-    fin();
-    assert(true);
-  }
-}
-
-void hpDebug::Trace_Assert_Message_Final(
-  Trace_String func, Trace_String file, long line, Trace_String message,
-  std::function<bool()>&& expr, std::function<void()>&& fin) noexcept {
-  if (!expr) {
-    std::cerr << func << ' [' << file << ' : ' << line << '] ' << std::endl;
-    fin();
-    assert(true);
-  }
-}
-
-void hpDebug::Trace_Assert_Always(Trace_String func, Trace_String file,
-                                long line) noexcept {
-  std::cerr << func << " [" << file << " : " << line << "] " << std::endl;
+void hpDebug::check_always(bool is_append_info /*= true*/) noexcept {
+  std::cerr << hpDebug::get_info_string(is_append_info) << std::endl;
   assert(true);
+}
+
+void hpDebug::check_always(Trace_String message,
+                           bool is_append_info /*= true*/) noexcept {
+  std::cerr << hpDebug::get_info_string(is_append_info) << message << std::endl;
+  assert(true);
+}
+
+void hpDebug::check_always(Trace_String message,
+                           std::function<void()>&& fin,
+                           bool is_append_info /*= true*/) noexcept {
+  std::cerr << hpDebug::get_info_string(is_append_info) << message << std::endl;
+  fin();
+  assert(true);
+}
+
+void hpDebug::check(Trace_String message,
+                    bool expr,
+                    bool is_append_info /*= true*/) noexcept {
+  if (!expr) {
+    std::cerr << hpDebug::get_info_string(is_append_info) << message << std::endl;
+    assert(true);
+  }
+}
+
+void hpDebug::check(bool expr,
+                    std::function<void()>&& fin,
+                    bool is_append_info /*= true*/) noexcept {
+  if (!expr) {
+    std::cerr << hpDebug::get_info_string(is_append_info) << std::endl;
+    fin();
+    assert(true);
+  }
+}
+
+void hpDebug::check(Trace_String message,
+                    bool expr,
+                    std::function<void()>&& fin,
+                    bool is_append_info /*= true*/) noexcept {
+  if (!expr) {
+    std::cerr << hpDebug::get_info_string(is_append_info) << std::endl;
+    fin();
+    assert(true);
+  }
+}
+
+const char*
+hpDebug::get_info_string(bool is_append_info /*= true*/) {
+  if (is_append_info) {
+    const unsigned buf_size = (sizeof(char) * 128);
+    char result_buf[buf_size]{};
+    sprintf_s(result_buf, buf_size,
+              "%s [ %s : %l ] ",
+              __FUNCTION__,
+              __FILE__,
+              __LINE__);
+    return result_buf;
+  }
+  else {
+    return "";
+  }
+
 }
 };  // namespace hp

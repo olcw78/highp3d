@@ -1,0 +1,2 @@
+E:\Dev\highp3d\Lib\highp3d-Renderer-Opengl-3.3.pdb
+E:\Dev\highp3d\Intermediate\highp3d-Renderer-Opengl-3.3.pdb

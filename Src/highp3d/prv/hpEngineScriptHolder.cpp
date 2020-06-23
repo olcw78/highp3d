@@ -8,7 +8,7 @@ hpEngineScriptHolder::hpEngineScriptHolder() noexcept
 
 hpEngineScriptHolder::~hpEngineScriptHolder() noexcept {
   for (auto& e : scripts_holder_list) {
-    if (e != nullptr) {
+    while (e != nullptr) {
       delete e;
       e = nullptr;
     }

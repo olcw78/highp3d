@@ -5,20 +5,16 @@
 #include "View.h"
 
 namespace {
-constexpr int RETURN_FAILED = 1;
-constexpr int RETURN_SUCCESS = 0;
-
 constexpr unsigned WINDOW_WIDTH = 1920u;
 constexpr unsigned WINDOW_HEIGHT = 1080u;
 constexpr const char* WINDOW_NAME = "highp3d - 01. render the basic triangle";
-};
+}; 
 
-int main() {
-
+int main(int argc, char** argv) {
   static hp::opengl::hpOpenglCore core;
-  if (RETURN_FAILED == core.init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME)) {
+  if (core.init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME) == hp::opengl::RETURN_FAILED) {
     std::cout << "Init Opengl-Core failed!" << std::endl;
-    return RETURN_FAILED;
+    return hp::opengl::RETURN_FAILED;
   }
 
   static hp::View view;
@@ -28,5 +24,5 @@ int main() {
   core.update();
   core.dispose();
 
-  return RETURN_SUCCESS;
+  return hp::opengl::RETURN_SUCCESS;
 }

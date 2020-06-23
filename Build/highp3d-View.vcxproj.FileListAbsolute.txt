@@ -1,0 +1,2 @@
+E:\Dev\highp3d\Build\highp3d-View.exe
+E:\Dev\highp3d\Build\highp3d-View.pdb

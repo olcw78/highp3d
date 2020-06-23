@@ -30,7 +30,7 @@ void hpCallbacks::Callback_On_Mouse_Scroll_Receive(GLFWwindow* window, double x,
 void hpCallbacks::Callback_On_Error_Receive(int errorCode, char const* description) {
 	char buf[128];
 	sprintf_s(buf, sizeof(buf), "GLFW Error %d: %s\n", errorCode, description);
-	TRACE_ERROR(buf);
+	hp::hpDebug::err(buf);
 }
 
 void hpCallbacks::Callback_On_Keyboard_Receive(GLFWwindow* window, int key, int scan_code, int action, int modes) {
