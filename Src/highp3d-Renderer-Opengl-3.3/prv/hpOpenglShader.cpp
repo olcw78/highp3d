@@ -11,7 +11,7 @@ Shader::Shader() noexcept {
   glGenBuffers(1, &mVBO);
 }
 
-void Shader::CompileShader(ShaderLayout layout) {
+void Shader::compile_shader(ShaderLayout layout) {
   if (!mHasProgramCreated) {
     bool isGeomShaderused = !layout.geomPath.empty();
     std::string vsStr, fsStr, gsStr;
@@ -41,21 +41,20 @@ void Shader::CompileShader(ShaderLayout layout) {
       }
     }
     catch (std::ifstream::failure& e) {
-      TRACE_ASSERT_MESSAGE_ALWAYS(
-        hpString::concat("Shader file reading error! : ", e.what()));
+      hpDebug::check_msg(hpString{ hpString::concat("Shader filed reading error! : ", e.what()) });
     }
 
     char const* vsCode = vsStr.c_str();
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vs, 1, &vsCode, nullptr);
     glCompileShader(vs);
-    CompileResult(vs, "VERTEX SHADER");
+    compile_result(vs, "VERTEX SHADER");
 
     char const* fsCode = fsStr.c_str();
     GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fs, 1, &fsCode, nullptr);
     glCompileShader(fs);
-    CompileResult(fs, "FRAGMENT SHADER");
+    compile_result(fs, "FRAGMENT SHADER");
 
     GLuint gs = 0u;
     if (isGeomShaderused) {
@@ -63,7 +62,7 @@ void Shader::CompileShader(ShaderLayout layout) {
       gs = glCreateShader(GL_GEOMETRY_SHADER);
       glShaderSource(gs, 1, &gsCode, nullptr);
       glCompileShader(gs);
-      CompileResult(gs, "GEOMETRY SHADER");
+      compile_result(gs, "GEOMETRY SHADER");
     }
 
     mProgram = glCreateProgram();
@@ -73,7 +72,7 @@ void Shader::CompileShader(ShaderLayout layout) {
       glAttachShader(mProgram, gs);
     }
     glLinkProgram(mProgram);
-    CompileResult(mProgram, "PROGRAM");
+    compile_result(mProgram, "PROGRAM");
 
     glDeleteShader(vs);
     glDeleteShader(fs);
@@ -84,22 +83,22 @@ void Shader::CompileShader(ShaderLayout layout) {
   }
 }
 
-void Shader::DisposeBuf() {
+void Shader::dispose_buf() {
   glDeleteVertexArrays(1, &mVAO);
   glDeleteBuffers(1, &mVBO);
   if (mHasProgramCreated) {
-    DisposeProgram();
+    dispose_program();
   }
 }
 
-void Shader::DisposeProgram() {
+void Shader::dispose_program() {
   if (mHasProgramCreated) {
     glDeleteProgram(mProgram);
     mHasProgramCreated = false;
   }
 }
 
-void Shader::CompileResult(GLuint id, const char* type) {
+void Shader::compile_result(GLuint id, const char* type) {
   GLint success = 0;
   GLchar infoLog[1024]{};
 
@@ -127,9 +126,10 @@ void Shader::CompileResult(GLuint id, const char* type) {
   }
 }
 
-void Shader::CreateBuf(const GLfloat* vertices, const size_t vtx_count,
-                       BufferLayout*& buf_layout,
-                       const size_t buf_layout_size) {
+void Shader::create_bufs(const GLfloat* vertices,
+                         size_t vtx_count,
+                         BufferLayout*& buf_layout,
+                         size_t buf_layout_size) {
   glBindVertexArray(mVAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, mVBO);
@@ -147,91 +147,93 @@ void Shader::CreateBuf(const GLfloat* vertices, const size_t vtx_count,
   glBindVertexArray(0);
 }
 
-Shader& Shader::Use() {
+Shader&
+Shader::use() {
   assert(mHasProgramCreated);
   glUseProgram(mProgram);
   return *this;
 }
 
-const GLuint Shader::GetUniLoc(Uniform_Name uniform_name) const {
+GLuint
+Shader::get_uniform_location(Uniform_Name uniform_name) const {
   assert(mHasProgramCreated);
   return glGetUniformLocation(
     mProgram, std::forward<Uniform_Name>(uniform_name).get_c_str());
 }
 
-void Shader::SetBool(Uniform_Name uniform_name, GLboolean bool_value) const {
-  glUniform1i(GetUniLoc(std::move(uniform_name)),
+void Shader::set_bool(Uniform_Name uniform_name, GLboolean bool_value) const {
+  glUniform1i(get_uniform_location(std::move(uniform_name)),
               Cast::ToInt(bool_value));
 }
 
-void Shader::SetInt(Uniform_Name uniform_name, GLint int_value) const {
-  glUniform1i(GetUniLoc(std::move(uniform_name)), int_value);
+void Shader::set_int(Uniform_Name uniform_name, GLint int_value) const {
+  glUniform1i(get_uniform_location(std::move(uniform_name)), int_value);
 }
 
 void Shader::SetFloat(Uniform_Name uniform_name, GLfloat float_value) const {
-  glUniform1f(GetUniLoc(std::move(uniform_name)), float_value);
+  glUniform1f(get_uniform_location(std::move(uniform_name)), float_value);
 }
 
 void Shader::SetTexture(Uniform_Name uniform_name,
                         GLint texture_value) const {
-  SetInt(std::move(uniform_name), texture_value);
+  set_int(std::move(uniform_name), texture_value);
 }
 
 void Shader::SetMat2(Uniform_Name uniform_name, glm::mat2 mat2_value) const {
-  glUniformMatrix2fv(GetUniLoc(std::move(uniform_name)), 1, GL_FALSE,
+  glUniformMatrix2fv(get_uniform_location(std::move(uniform_name)), 1, GL_FALSE,
                      glm::value_ptr(std::move(mat2_value)));
 }
 
 void Shader::SetMat3(Uniform_Name uniform_name, glm::mat3 mat3_value) const {
-  glUniformMatrix3fv(GetUniLoc(std::move(uniform_name)), 1, GL_FALSE,
+  glUniformMatrix3fv(get_uniform_location(std::move(uniform_name)), 1, GL_FALSE,
                      glm::value_ptr(std::move(mat3_value)));
 }
 
 void Shader::SetMat4(Uniform_Name uniform_name, glm::mat4 mat4_value) const {
-  glUniformMatrix4fv(GetUniLoc(std::move(uniform_name)), 1, GL_FALSE,
+  glUniformMatrix4fv(get_uniform_location(std::move(uniform_name)), 1, GL_FALSE,
                      glm::value_ptr(std::move(mat4_value)));
 }
 
 void Shader::SetVec2(Uniform_Name uniform_name, GLfloat x, GLfloat y) const {
-  glUniform2f(GetUniLoc(std::move(uniform_name)), x, y);
+  glUniform2f(get_uniform_location(std::move(uniform_name)), x, y);
 }
 
 void Shader::SetVec2(Uniform_Name uniform_name, GLfloat float_value) const {
-  glUniform2f(GetUniLoc(std::move(uniform_name)), float_value, float_value);
+  glUniform2f(get_uniform_location(std::move(uniform_name)), float_value, float_value);
 }
 
 void Shader::SetVec2(Uniform_Name uniform_name, glm::vec2 vec2_value) const {
-  glUniform2fv(GetUniLoc(std::move(uniform_name)), 1,
+  glUniform2fv(get_uniform_location(std::move(uniform_name)), 1,
                glm::value_ptr(std::move(vec2_value)));
 }
 
 void Shader::SetVec3(Uniform_Name uniform_name, GLfloat x, GLfloat y,
                      GLfloat z) const {
-  glUniform3f(GetUniLoc(std::move(uniform_name)), x, y, z);
+  glUniform3f(get_uniform_location(std::move(uniform_name)), x, y, z);
 }
 
 void Shader::SetVec3(Uniform_Name uniform_name, GLfloat float_value) const {
-  glUniform3f(GetUniLoc(std::move(uniform_name)), float_value, float_value,
+  glUniform3f(get_uniform_location(std::move(uniform_name)), float_value, float_value,
               float_value);
 }
 
 void Shader::SetVec3(Uniform_Name uniform_name, glm::vec3 vec3_value) const {
-  glUniform3fv(GetUniLoc(std::move(uniform_name)), 1,
+  glUniform3fv(get_uniform_location(std::move(uniform_name)), 1,
                glm::value_ptr(std::move(vec3_value)));
 }
 
 void Shader::SetVec4(Uniform_Name uniform_name, GLfloat x, GLfloat y,
                      GLfloat z, GLfloat w) const {
-  glUniform4f(GetUniLoc(std::move(uniform_name)), x, y, z, w);
+  glUniform4f(get_uniform_location(std::move(uniform_name)), x, y, z, w);
 }
 
 void Shader::SetVec4(Uniform_Name uniform_name, GLfloat float_value) const {
-  glUniform4f(GetUniLoc(std::move(uniform_name)), float_value, float_value,
+  glUniform4f(get_uniform_location(std::move(uniform_name)), float_value, float_value,
               float_value, float_value);
 }
 
 void Shader::SetVec4(Uniform_Name uniform_name, glm::vec4 vec4_value) const {
-  glUniform4fv(GetUniLoc(std::move(uniform_name)), 1,
+  glUniform4fv(get_uniform_location(std::move(uniform_name)), 1,
                glm::value_ptr(std::move(vec4_value)));
 }
 

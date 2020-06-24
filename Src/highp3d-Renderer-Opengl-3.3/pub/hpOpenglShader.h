@@ -32,26 +32,28 @@ struct ShaderLayout final {
 };
 
 class Shader final {
-  using Shader_Path = hpString&&;
-  using Uniform_Name = hpString&&;
+  using Shader_Path = hpString;
+  using Uniform_Name = hpString;
 
 public:
   explicit Shader() noexcept;
 
-  void CompileShader(ShaderLayout layout);
-  void DisposeBuf();
-  void DisposeProgram();
-  Shader& Use();
+  void compile_shader(ShaderLayout layout);
+  void dispose_buf();
+  void dispose_program();
+  Shader& use();
 
 private:
-  void CompileResult(GLuint id, const char* typ);
-  void CreateBuf(const GLfloat* vertices, const size_t vtx_count,
-                 BufferLayout*& buf_layout, const size_t buf_layout_size);
+  void compile_result(GLuint id, const char* typ);
+  void create_bufs(const GLfloat* vertices,
+                   size_t vtx_count,
+                   BufferLayout*& buf_layout,
+                   size_t buf_layout_size);
 
 public:
-  const GLuint GetUniLoc(Uniform_Name uniform_name) const;
-  void SetBool(Uniform_Name uniform_name, GLboolean bool_value) const;
-  void SetInt(Uniform_Name uniform_name, GLint int_value) const;
+  GLuint get_uniform_location(Uniform_Name uniform_name) const;
+  void set_bool(Uniform_Name uniform_name, GLboolean bool_value) const;
+  void set_int(Uniform_Name uniform_name, GLint int_value) const;
   void SetFloat(Uniform_Name uniform_name, GLfloat float_value) const;
   void SetTexture(Uniform_Name uniform_name, GLint texture_value) const;
 

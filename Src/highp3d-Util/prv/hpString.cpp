@@ -1,4 +1,6 @@
 #include "../pub/hpString.h"
+#include "../pub/hpMacro.h"
+
 #include <iostream>
 #include <cstdlib>
 
@@ -59,9 +61,12 @@ hpString::hpString(const hpString& cpy) noexcept {
   hpString::copy(str_body, cpy.str_body);
 }
 
-hpString::hpString(hpString&& mov) noexcept { *this = std::move(mov); }
+hpString::hpString(hpString&& mov) noexcept {
+  *this = std::move(mov);
+}
 
-hpString& hpString::operator=(const hpString& cpy) noexcept {
+hpString&
+hpString::operator=(const hpString& cpy) noexcept {
   length = cpy.length;
 
   if (!str_body) {
@@ -76,18 +81,74 @@ hpString& hpString::operator=(const hpString& cpy) noexcept {
   return *this;
 }
 
-hpString& hpString::operator=(hpString&& mov) noexcept {
+hpString&
+hpString::operator=(hpString&& mov) noexcept {
   str_body = std::move(mov.str_body);
   length = mov.length;
   capacity = mov.capacity;
   return *this;
 }
 
-bool hpString::is_empty(const hpString& ref) noexcept {
+bool
+hpString::operator<(const hpString& ref) const noexcept {
+  return (str_body < ref.str_body&& length < ref.length);
+}
+
+bool
+hpString::operator>(const hpString& ref) const noexcept {
+  return (str_body > ref.str_body && length > ref.length);
+}
+
+bool
+hpString::operator==(const hpString& comp) const noexcept {
+  return (equal(str_body, comp.str_body) && length == comp.length);
+}
+
+void hpString::operator<<(const hpString& add) noexcept {
+  hpString::append(str_body, hpString::len(str_body), add.str_body);
+}
+
+void hpString::operator<<(const char* add) noexcept {
+  hpString::append(str_body, hpString::len(str_body), add);
+}
+
+
+void hpString::operator<<(char add) noexcept {
+  hpString::append(str_body, hpString::len(str_body), &add);
+}
+
+char
+hpString::operator[](int index) noexcept {
+
+  // TRACE_ERROR_EXPR("Index cannot be over total size of string!", [=]() {
+  // return SCAST(unsigned, index) > mLength; });
+  return str_body[index];
+}
+
+size_t
+hpString::operator()(const hpString& cpy) noexcept {
+  return (std::hash<unsigned>::_Do_hash(cpy.get_len() << 1) >> 1) * 32 ^
+    (std::hash<unsigned>::_Do_hash(cpy.get_cap() << 1)) * 33;
+}
+
+hpString
+hpString::make_new() noexcept { return hpString{}; }
+
+hpString
+hpString::make_new(const char* str) noexcept { return hpString{ str }; }
+
+hpString
+hpString::make_new(const char* str, unsigned capacity) noexcept {
+  return hpString{ str, capacity };
+}
+
+bool
+hpString::is_empty(const hpString& ref) noexcept {
   return len(ref.str_body) == 0 || ref.str_body == nullptr;
 }
 
-unsigned hpString::len(const char* str) noexcept {
+unsigned
+hpString::len(const char* str) noexcept {
   if (str == nullptr || str == "") {
     return 0u;
   }
@@ -96,11 +157,13 @@ unsigned hpString::len(const char* str) noexcept {
   return length;
 }
 
-unsigned hpString::len(const hpString& ref) noexcept {
+unsigned
+hpString::len(const hpString& ref) noexcept {
   return ref.get_len();
 }
 
-void hpString::append(char* target, unsigned orig_len,
+void hpString::append(char* target,
+                      unsigned orig_len,
                       const char* substr) noexcept {
   *(target + orig_len) = '\0';
   const unsigned substrLen = len(substr);
@@ -112,7 +175,8 @@ void hpString::append(char* target, unsigned orig_len,
   target = res - newLen;
 }
 
-void hpString::append(hpString& ref, const char* substr) {
+void hpString::append(hpString& ref,
+                      const char* substr) {
   const unsigned substrLen = len(substr);
   const unsigned newLen = ref.length + substrLen;
   char* res = hpString::alloc_new_str(ref.str_body, newLen);
@@ -124,7 +188,8 @@ void hpString::append(hpString& ref, const char* substr) {
   ref.set_str(res);
 }
 
-void hpString::append(hpString& ref, char c) {
+void hpString::append(hpString& ref,
+                      char c) {
   const unsigned newLen = ref.length + 1;
   char* res = hpString::alloc_new_str(ref.str_body, newLen);
   res += (newLen - 1);
@@ -135,7 +200,8 @@ void hpString::append(hpString& ref, char c) {
   ref.set_str(res);
 }
 
-void hpString::append(hpString& ref, const hpString& subref) {
+void hpString::append(hpString& ref,
+                      const hpString& subref) {
   const unsigned newLen = ref.get_len() + subref.get_len();
   const char* substr = subref.get_c_str();
   char* res = hpString::alloc_new_str(ref.get_c_str(), newLen);
@@ -147,13 +213,14 @@ void hpString::append(hpString& ref, const hpString& subref) {
   ref.set_str(res);
 }
 
-bool hpString::equal(const char* str1, const char* str2) noexcept {
+bool
+hpString::equal(const char* str1,
+                const char* str2) noexcept {
   bool is_equal = false;
 
   // early return.
   // If their address is same.
   if (&str1 == &str2) {
-
     // no need to advance more.
     return true;
   }
@@ -180,21 +247,30 @@ bool hpString::equal(const char* str1, const char* str2) noexcept {
     else {
       is_equal = false;
     }
+
     ++str1;
     ++str2;
   }
   return is_equal;
 }
 
-bool hpString::equal(const hpString& str1, const hpString& str2) {
-  if (str1 == str2) return true;
+bool
+hpString::equal(const hpString& str1,
+                const hpString& str2) {
+  if (str1 == str2) {
+    return true;
+  }
+
   return hpString::equal(str1.str_body, str2.str_body);
 }
 
-bool hpString::contain(const char* str, const char* substr) {
+bool
+hpString::contain(const char* str,
+                  const char* substr) {
   if (str == nullptr || substr == nullptr) {
     return false;
   }
+
   const unsigned substrLen = len(substr);
   unsigned lencount = 0u;
   while (*str && *substr) {
@@ -208,32 +284,39 @@ bool hpString::contain(const char* str, const char* substr) {
   return false;
 }
 
-bool hpString::contain(const char* str, char c) noexcept {
+bool
+hpString::contain(const char* str,
+                  char c) noexcept {
   if (str == nullptr) {
     return false;
   }
 
   while (*str) {
-    if (*str == c) return true;
+    if (*str == c) {
+      return true;
+    }
+
     ++str;
   }
   return false;
 }
 
-bool hpString::contain(const hpString& str, const hpString& substr) {
+bool
+hpString::contain(const hpString& str,
+                  const hpString& substr) {
   if (str.empty() || substr.empty()) {
     return false;
   }
 
   const unsigned substrLen = substr.get_len();
-  unsigned lencount = 0u;
+  unsigned len_count = 0u;
   const char* _str = str.get_c_str();
   const char* _substr = substr.get_c_str();
 
   while (!*_str && !*_substr) {
     if (*_str == *_substr) {
-      ++lencount;
-      if (lencount == substrLen) return true;
+      ++len_count;
+      if (len_count == substrLen) return true;
     }
     ++_str;
     ++_substr;
@@ -241,7 +324,9 @@ bool hpString::contain(const hpString& str, const hpString& substr) {
   return false;
 }
 
-bool hpString::contain(const hpString& str, const char* substr) {
+bool
+hpString::contain(const hpString& str,
+                  const char* substr) {
   if (str.empty() || substr == nullptr) return false;
 
   const unsigned substrLen = len(substr);
@@ -258,7 +343,9 @@ bool hpString::contain(const hpString& str, const char* substr) {
   return false;
 }
 
-const char* hpString::copy(char* dest, const char* src) {
+const char*
+hpString::copy(char* dest,
+               const char* src) {
   if (dest == nullptr) return nullptr;
   while (*src) {
     *(dest++) = *(src++);
@@ -267,16 +354,20 @@ const char* hpString::copy(char* dest, const char* src) {
   return dest;
 }
 
-const char* hpString::copy(const char* str1, const char* str2) {
-  if (str1 == nullptr) return nullptr;
-  const unsigned newLen = hpString::len(str2);
-  char* res = hpString::alloc_new_str(str1, newLen);
-  while (*str2 != '\0') *(res++) = *(str2++);
-  *(res + 1) = '\0';
-  return res;
-}
+//const char*
+//hpString::copy(const char* str1,
+//               const char* str2) {
+//  if (str1 == nullptr) return nullptr;
+//  const unsigned newLen = hpString::len(str2);
+//  char* res = hpString::alloc_new_str(str1, newLen);
+//  while (*str2 != '\0') *(res++) = *(str2++);
+//  *(res + 1) = '\0';
+//  return res;
+//}
 
-const char* hpString::concat(char* dest, const char* src) {
+const char*
+hpString::concat(char* dest,
+                 const char* src) {
   if (dest == nullptr) return nullptr;
   const unsigned destLen = hpString::len(dest);
   const unsigned newLen = destLen + hpString::len(src);
@@ -289,7 +380,9 @@ const char* hpString::concat(char* dest, const char* src) {
   return res;
 }
 
-const char* hpString::concat(const char* str1, const char* str2) {
+const char*
+hpString::concat(const char* str1,
+                 const char* str2) {
   if (str1 == nullptr) return nullptr;
   const unsigned destLen = hpString::len(str1);
   const unsigned newLen = destLen + hpString::len(str2);
@@ -300,53 +393,13 @@ const char* hpString::concat(const char* str1, const char* str2) {
   return res - newLen;
 }
 
-hpString hpString::make_new() noexcept { return hpString{}; }
-
-hpString hpString::make_new(const char* str) noexcept { return hpString{ str }; }
-
-hpString hpString::make_new(const char* str, unsigned capacity) noexcept {
-  return hpString{ str, capacity };
+bool
+hpString::empty() const noexcept {
+  return (str_body == nullptr || len(str_body) == 0u);
 }
 
-bool hpString::operator<(const hpString& ref) const noexcept {
-  return str_body < ref.str_body;
-}
-
-bool hpString::operator>(const hpString& ref) const noexcept {
-  return str_body > ref.str_body;
-}
-
-bool hpString::operator==(const hpString& comp) const noexcept {
-  return (equal(str_body, comp.str_body) && length == comp.length);
-}
-
-void hpString::operator<<(const hpString& add) noexcept {
-  hpString::append(str_body, hpString::len(str_body), add.str_body);
-}
-
-void hpString::operator<<(const char* add) noexcept {
-  hpString::append(str_body, hpString::len(str_body), add);
-}
-
-void hpString::operator<<(char add) noexcept {
-  hpString::append(str_body, hpString::len(str_body), &add);
-}
-
-char hpString::operator[](int index) noexcept {
-
-  // TRACE_ERROR_EXPR("Index cannot be over total size of string!", [=]() {
-  // return SCAST(unsigned, index) > mLength; });
-  return str_body[index];
-}
-
-size_t hpString::operator()(const hpString& cpy) noexcept {
-  return (std::hash<unsigned>::_Do_hash(cpy.get_len() << 1) >> 1) * 32 ^
-    (std::hash<unsigned>::_Do_hash(cpy.get_cap() << 1)) * 33;
-}
-
-bool hpString::empty() const noexcept { return (!str_body || len(str_body) == 0); }
-
-const char* hpString::reverse() {
+const char*
+hpString::reverse() {
 
   // TRACE_ERROR_EXPR("This string is not assigned yet!", [=]() { return
   // mCapacity <= 0 || mLength <= 0; });
@@ -364,18 +417,21 @@ const char* hpString::reverse() {
   return result_str;
 }
 
-int hpString::reserve(unsigned new_size) {
+bool
+hpString::reserve(unsigned new_size) {
   if (capacity > new_size) {
-    return -1;
+    return false;
   }
 
   const char* temp_str = std::move(str_body);
   str_body = hpString::alloc_new_str(new_size);
-  while (*(temp_str) != '\0') *(str_body++) = *(temp_str++);
+  while (*(temp_str) != '\0') {
+    *(str_body++) = *(temp_str++);
+  }
 
   capacity = new_size;
   length = new_size;
-  return 0;
+  return true;
 }
 
 void hpString::reset(const char* str) {
@@ -385,33 +441,42 @@ void hpString::reset(const char* str) {
   *str_body = '\0';
 }
 
-bool hpString::equal(const char* str) { return hpString::equal(str_body, str); }
+bool
+hpString::equal(const char* str) {
+  return hpString::equal(str_body, str);
+}
 
-bool hpString::eqaul(const hpString& str) {
+bool
+hpString::eqaul(const hpString& str) {
   return hpString::equal(*this, str);
 }
 
-hpString& hpString::append(const hpString& ref) {
+hpString&
+hpString::append(const hpString& ref) {
   hpString::append(*this, ref);
   return *this;
 }
 
-hpString& hpString::append(hpString&& mov) {
+hpString&
+hpString::append(hpString&& mov) {
   hpString::append(*this, std::move(mov));
   return *this;
 }
 
-hpString& hpString::append(const char* str) {
+hpString&
+hpString::append(const char* str) {
   hpString::append(*this, str);
   return *this;
 }
 
-hpString& hpString::append(char c) {
+hpString&
+hpString::append(char c) {
   hpString::append(*this, c);
   return *this;
 }
 
-hpString& hpString::insert(unsigned location, hpString&& mov) {
+hpString&
+hpString::insert(unsigned location, hpString&& mov) {
   if (location < 0 || location > length) {
     return *this;
   }
@@ -436,27 +501,15 @@ hpString& hpString::insert(unsigned location, hpString&& mov) {
     *(str_body++) = *(temp_str);
   }
 
-  do {
-    delete start_from;
-    start_from = nullptr;
-  }
-  while (start_from != nullptr);
+  SDEL(start_from);
+  SDEL(temp_str);
+  SDEL(target_str);
 
-  do {
-    delete temp_str;
-    temp_str = nullptr;
-  }
-  while (temp_str != nullptr);
-
-  do {
-    delete target_str;
-    target_str = nullptr;
-  }
-  while (target_str != nullptr);
   return *this;
 }
 
-hpString& hpString::insert(unsigned location, const hpString& cpy) {
+hpString&
+hpString::insert(unsigned location, const hpString& cpy) {
   if (location < 0 || location > length) {
     return *this;
   }
@@ -481,27 +534,15 @@ hpString& hpString::insert(unsigned location, const hpString& cpy) {
     *(str_body++) = *(temp_str);
   }
 
-  do {
-    delete start_from;
-    start_from = nullptr;
-  }
-  while (start_from != nullptr);
+  SDEL(start_from);
+  SDEL(temp_str);
+  SDEL(target_str);
 
-  do {
-    delete temp_str;
-    temp_str = nullptr;
-  }
-  while (temp_str != nullptr);
-
-  do {
-    delete target_str;
-    target_str = nullptr;
-  }
-  while (target_str != nullptr);
   return *this;
 }
 
-hpString& hpString::insert(unsigned location, const char* str) {
+hpString&
+hpString::insert(unsigned location, const char* str) {
   if (location < 0 || location > length) {
     return *this;
   }
@@ -525,17 +566,8 @@ hpString& hpString::insert(unsigned location, const char* str) {
     *(str_body++) = *(temp_str++);
   }
 
-  do {
-    delete start_from;
-    start_from = nullptr;
-  }
-  while (start_from != nullptr);
-
-  do {
-    delete temp_str;
-    temp_str = nullptr;
-  }
-  while (temp_str != nullptr);
+  SDEL(start_from);
+  SDEL(temp_str);
 
   return *this;
 }
@@ -578,6 +610,42 @@ hpString& hpString::insert(unsigned location, char c) {
   return *this;
 }
 
+void hpString::copy_from(hpString& from) {
+  str_body = from.str_body;
+  length = from.length;
+  capacity = from.capacity;
+}
+
+void hpString::copy_from(const char* str) {
+  const unsigned new_string_len = hpString::len(str);
+  str_body = hpString::alloc_new_str(str, new_string_len);
+  length = new_string_len;
+  if (capacity < new_string_len) {
+    capacity = new_string_len;
+  }
+}
+
+void hpString::copy_from(char c) {
+  str_body = hpString::alloc_new_str(c);
+  capacity = length = 1;
+}
+
+void hpString::copy_to(hpString& to) {
+  to.str_body = str_body;
+  to.length = length;
+  if (to.capacity < capacity) {
+    to.capacity = capacity;
+  }
+}
+
+void hpString::copy_to(char* str) {
+  if (str == nullptr) {
+    return;
+  }
+
+  str = str_body;
+}
+
 void hpString::print() const noexcept {
   for (unsigned i = 0; i < length; ++i) {
     std::cout << str_body[i];
@@ -585,34 +653,47 @@ void hpString::print() const noexcept {
 }
 
 void hpString::println() const noexcept {
-  for (unsigned i = 0; i < length; ++i) {
-    std::cout << str_body[i];
-  }
+  hpString::print();
   std::cout << std::endl;
 }
 
-const char* hpString::get_c_str() const noexcept { return str_body; }
+const char*
+hpString::get_c_str() const noexcept { return str_body; }
 
-char* hpString::get_editable_c_str() noexcept { return str_body; }
+char*
+hpString::get_editable_c_str() noexcept { return str_body; }
 
 void hpString::set_str(const char* str) { str_body = const_cast<char*>(str); }
 
-unsigned hpString::get_len() const noexcept { return length; }
+unsigned
+hpString::get_len() const noexcept { return length; }
 
 void hpString::setLength(unsigned length) { length = length; }
 
-unsigned hpString::get_cap() const noexcept { return capacity; }
+unsigned
+hpString::get_cap() const noexcept { return capacity; }
 
 void hpString::set_cap(unsigned cap) { capacity = cap; }
 
-char* hpString::alloc_new_str(unsigned new_size) {
+char*
+hpString::alloc_new_str(unsigned new_size) {
   const unsigned res_size = sizeof(char) * new_size;
   char* res = new char[res_size];
   *(res + res_size) = '\0';
   return res;
 }
 
-char* hpString::alloc_new_str(const char* orig) {
+
+char*
+hpString::alloc_new_char(char c) {
+  char* res = new char[1];
+  *res = c;
+  return res;
+}
+
+
+char*
+hpString::alloc_new_str(const char* orig) {
   const unsigned orig_size = len(orig);
   const unsigned res_size = sizeof(char) * orig_size;
   char* res = new char[res_size];
@@ -622,7 +703,8 @@ char* hpString::alloc_new_str(const char* orig) {
   return res;
 }
 
-char* hpString::alloc_new_str(const char* orig, unsigned new_size) {
+char*
+hpString::alloc_new_str(const char* orig, unsigned new_size) {
   char* res = new char[new_size + 1];
   *(res + new_size + 1) = '\0';
 
@@ -635,4 +717,22 @@ char* hpString::alloc_new_str(const char* orig, unsigned new_size) {
   res -= pusher;
   return res;
 }
+
+void hpString::print_err() const noexcept {
+  for (unsigned i = 0; i < length; ++i) {
+    std::cerr << str_body[i];
+  }
+}
+
+void hpString::println_err() const noexcept {
+  hpString::print_err();
+  std::cerr << std::endl;
+}
+
 };  // namespace hp
+
+std::ostream&
+operator<<(std::ostream& ostr, hp::hpString& str) {
+  ostr << str.get_c_str();
+  return ostr;
+}

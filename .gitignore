@@ -7,3 +7,4 @@ Intermediate/
 *.idb
 *.obj
 *.ilk
+highp3d*.lib

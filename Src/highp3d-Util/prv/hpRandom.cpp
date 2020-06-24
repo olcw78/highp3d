@@ -3,60 +3,74 @@
 #include <cstdlib>
 
 namespace hp {
-int
-hpRandom::RandomInt(int seed) noexcept {
+
+#pragma region static fields initialisation
+long hpRandom::current_seed = 0l;
+#pragma endregion
+
+void hpRandom::set_seed(long seed /*= 0*/) {
+  hpRandom::current_seed = seed;
   srand(seed != 0 ? seed : static_cast<unsigned>(time(nullptr)));
+}
+
+int
+hpRandom::rand_int() noexcept {
   return rand();
 }
 
 unsigned
-hpRandom::RandomUnsigned(int seed) noexcept {
-  return static_cast<unsigned>(hpRandom::RandomInt(seed));
+hpRandom::rand_unsigned() noexcept {
+  return static_cast<unsigned>(rand());
 }
 
 float
-hpRandom::RandomFloat(int seed) noexcept {
-  return static_cast<float>(hpRandom::RandomInt(seed));
+hpRandom::rand_float() noexcept {
+  return static_cast<float>(rand());
 }
 
 double
-hpRandom::RandomDouble(int seed) noexcept {
-  return static_cast<double>(hpRandom::RandomInt(seed));
+hpRandom::rand_double() noexcept {
+  return static_cast<double>(rand());
 }
 
 int
-hpRandom::RandomRange(int min, int max, int seed) noexcept {
+hpRandom::rand_range_int(int min,
+                         int max) noexcept {
   int res = 0;
   while (res <= max && res >= min) {
-    res = hpRandom::RandomInt(seed);
+    res = hpRandom::rand_int();
   }
   return res;
 }
 
 unsigned
-hpRandom::RandomRangeUnsigned(unsigned min, unsigned max, int seed) noexcept {
+hpRandom::rand_range_unsigned(unsigned min,
+                              unsigned max) noexcept {
   unsigned res = 0u;
   while (res <= max && res >= min) {
-    res = hpRandom::RandomUnsigned(seed);
+    res = hpRandom::rand_unsigned();
   }
   return res;
 }
 
 float
-hpRandom::RandomRangeFloat(float min, float max, int seed) noexcept {
+hpRandom::rand_range_float(float min,
+                           float max) noexcept {
   float res = 0.0f;
   while (res <= max && res >= min) {
-    res = hpRandom::RandomFloat(seed);
+    res = hpRandom::rand_float();
   }
   return res;
 }
 
 double
-hpRandom::RandomRangeDouble(double min, double max, int seed) noexcept {
+hpRandom::rand_range_double(double min,
+                            double max) noexcept {
   double res = 0.0;
   while (res <= max && res >= min) {
-    res = hpRandom::RandomDouble(seed);
+    res = hpRandom::rand_double();
   }
   return res;
 }
+
 };  // namespace hp
