@@ -1,28 +1,35 @@
 #include "../pub/hpObjectHelper.h"
 
 namespace hp {
-bool hpObjectHelper::is_rand_instanceID_created = false;
-std::tuple<bool, unsigned>
-hpObjectHelper::rand_instanceIDs_arr[instanceID_amount]{};
+#pragma region static fields initialisation.
+bool hpObjectHelper::is_instanceID_prepared = false;
 
-unsigned hpObjectHelper::make_rand_instanceID() noexcept {
-  if (!is_rand_instanceID_created) {
-    for (unsigned i = 0; i < instanceID_amount; ++i) {
-      rand_instanceIDs_arr[i] = std::tuple<bool, unsigned>{ false, i };
-    }
-    is_rand_instanceID_created = true;
+std::tuple<bool, unsigned> hpObjectHelper::instanceID_arr[rand_instaceID_amount]{};
+#pragma endregion
+
+
+void hpObjectHelper::prepare_rand_instanceID() noexcept {
+  if (is_instanceID_prepared) {
+    return;
   }
 
-  unsigned resultId = hpRandom::rand_range_unsigned(0u, instanceID_amount);
-  while (is_rand_instanceID_created) {
-    for (unsigned i = 0; i < instanceID_amount; ++i) {
-      if (!std::get<0>(rand_instanceIDs_arr[i])) {
-        if (resultId != std::get<1>(rand_instanceIDs_arr[i])) {
-          return resultId;
-        }
-      }
-      resultId = hpRandom::rand_range_unsigned(0u, instanceID_amount);
-    }
+  for (unsigned i = 0; i < rand_instaceID_amount; ++i) {
+    instanceID_arr[i] = hpObjectHelper::T_uniq_instanceID_tuple{ false, i };
   }
+
+  is_instanceID_prepared = true;
+}
+
+hpObjectHelper::T_uniq_instanceID
+hpObjectHelper::make_rand_instanceID() noexcept {
+  for (unsigned i = 0; i < rand_instaceID_amount; ++i) {
+    // if the key is already used!
+    if (std::get<e_rand_instanceID_key::e_is_instanceID_used>(instanceID_arr[i])) {
+      continue;
+    }
+    std::get<e_rand_instanceID_key::e_is_instanceID_used>(instanceID_arr[i]) = true;
+    return std::get<e_rand_instanceID_key::e_uniq_instanceID>(instanceID_arr[i]);
+  }
+  return hpObjectHelper::err_instanceID;
 }
 };  // namespace hp

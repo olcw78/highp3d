@@ -32,60 +32,67 @@ struct ShaderLayout final {
 };
 
 class Shader final {
-  using Shader_Path = hpString&&;
-  using Uniform_Name = hpString&&;
+  using Shader_Path = hpString;
+  using Uniform_Name = hpString;
 
 public:
   explicit Shader() noexcept;
 
   void compile_shader(ShaderLayout layout);
-  void dispose_buffers();
-  void dispose_shader_program();
+  void dispose_buf();
+  void dispose_program();
   Shader& use();
 
 private:
-  void get_compile_result(GLuint id, const char* typ);
-  void create_buffer(const GLfloat* vertices, const size_t vtx_count,
-                 BufferLayout*& buf_layout, const size_t buf_layout_size);
+  void compile_result(GLuint id, const char* typ);
+  void create_bufs(const GLfloat* vertices,
+                   size_t vtx_count,
+                   BufferLayout*& buf_layout,
+                   size_t buf_layout_size);
 
 public:
   GLuint get_uniform_location(Uniform_Name uniform_name) const;
   void set_bool(Uniform_Name uniform_name, GLboolean bool_value) const;
   void set_int(Uniform_Name uniform_name, GLint int_value) const;
-  void set_float(Uniform_Name uniform_name, GLfloat float_value) const;
-  void set_texture(Uniform_Name uniform_name, GLint texture_value) const;
+  void SetFloat(Uniform_Name uniform_name, GLfloat float_value) const;
+  void SetTexture(Uniform_Name uniform_name, GLint texture_value) const;
 
-  void set_mat2(Uniform_Name uniform_name, glm::mat2 mat2_value) const;
-  void set_mat3(Uniform_Name uniform_name, glm::mat3 mat3_value) const;
-  void set_mat4(Uniform_Name uniform_name, glm::mat4 mat4_value) const;
+  void SetMat2(Uniform_Name uniform_name, glm::mat2 mat2_value) const;
+  void SetMat3(Uniform_Name uniform_name, glm::mat3 mat3_value) const;
+  void SetMat4(Uniform_Name uniform_name, glm::mat4 mat4_value) const;
 
-  void set_vec2(Uniform_Name uniform_name, GLfloat x, GLfloat y) const;
-  void set_vec2(Uniform_Name uniform_name, GLfloat float_value) const;
-  void set_vec2(Uniform_Name uniform_name, glm::vec2 vec2_value) const;
+  void SetVec2(Uniform_Name uniform_name, GLfloat x, GLfloat y) const;
+  void SetVec2(Uniform_Name uniform_name, GLfloat float_value) const;
+  void SetVec2(Uniform_Name uniform_name, glm::vec2 vec2_value) const;
 
-  void set_vec3(Uniform_Name uniform_name, GLfloat x, GLfloat y, GLfloat z) const;
-  void set_vec3(Uniform_Name uniform_name, GLfloat float_value) const;
-  void set_vec3(Uniform_Name uniform_name, glm::vec3 vec3_value) const;
+  void SetVec3(Uniform_Name uniform_name, GLfloat x, GLfloat y,
+               GLfloat z) const;
+  void SetVec3(Uniform_Name uniform_name, GLfloat float_value) const;
+  void SetVec3(Uniform_Name uniform_name, glm::vec3 vec3_value) const;
 
-  void set_vec4(Uniform_Name uniform_name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const;
-  void set_vec4(Uniform_Name uniform_name, GLfloat float_value) const;
-  void set_vec4(Uniform_Name uniform_name, glm::vec4 vec4_value) const;
+  void SetVec4(Uniform_Name uniform_name, GLfloat x, GLfloat y, GLfloat z,
+               GLfloat w) const;
+  void SetVec4(Uniform_Name uniform_name, GLfloat float_value) const;
+  void SetVec4(Uniform_Name uniform_name, glm::vec4 vec4_value) const;
 
-  void set_colour(Uniform_Name uniform_name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const;
-  void set_colour(Uniform_Name uniform_name, GLfloat float_value) const;
-  void set_colour(Uniform_Name uniform_name, glm::vec4 vec4_value) const;
+  void SetCol4(Uniform_Name uniform_name, GLfloat x, GLfloat y, GLfloat z,
+               GLfloat w) const;
+  void SetCol4(Uniform_Name uniform_name, GLfloat float_value) const;
+  void SetCol4(Uniform_Name uniform_name, glm::vec4 vec4_value) const;
 
 public:
-  GLuint get_shader_program() const noexcept;
-  GLuint get_VAO() const noexcept;
-  GLuint get_VBO() const noexcept;
-  GLuint get_EBO() const noexcept;
+  GLuint getProgram() const noexcept;
+  GLuint getVAO() const noexcept;
+  GLuint getVBO() const noexcept;
+  GLuint getEBO() const noexcept;
+  GLboolean hasProgramCreated() const noexcept;
 
 protected:
-  GLuint shader_program = 0u;
-  GLuint VAO = 0u;
-  GLuint VBO = 0u;
-  GLuint EBO = 0u;
+  GLuint mProgram = 0u;
+  GLuint mVAO = 0u;
+  GLuint mVBO = 0u;
+  GLuint mEBO = 0u;
+  GLboolean mHasProgramCreated = GL_FALSE;
 };
 };  // namespace opengl
 };  // namespace hp

@@ -1,53 +1,57 @@
 #include "../pub/hpObject.h"
-#include "../pub/hpObjectHelper.h"
 
 namespace hp {
 hpObject::hpObject() noexcept {
-  mInstanceId = hpObjectHelper::make_rand_instanceID();
-  mName = hpString{ "hpObject" + mInstanceId };
+  instanceID = hpObjectHelper::make_rand_instanceID();
+  name = hpString{ "Object" + instanceID };
 }
 
+//Object::Object(glm::vec3 pos, glm::quat rot) noexcept {
+//
+//}
+
 hpObject::hpObject(hpString&& str) noexcept {
-  mInstanceId = hpObjectHelper::make_rand_instanceID();
-  mName = std::forward<hpString>(str);
+  instanceID = hpObjectHelper::make_rand_instanceID();
+  name = std::forward<hpString>(str);
   //
 }
 
-std::ostream&
-operator<<(std::ostream& ostr, const hpObject& obj) noexcept {
-  char* str = new char[64];
-  *str = '\0';
-  sprintf_s(str, sizeof(str), " [ Name: %s, InstanceID: %zu",
-            obj.mName.get_c_str(), obj.mInstanceId);
-  while (*str) {
-    ostr << *(str++);
-  }
-  return ostr;
-}
-
-bool 
+bool
 hpObject::operator==(const hpObject& ref) noexcept {
-  return (mInstanceId == ref.mInstanceId && mName.eqaul(ref.mName));
+  return (instanceID == ref.instanceID && hpString::equal(name, ref.name));
 }
 
-bool 
+bool
 hpObject::destroy_self(float delay) {
   return false;
 }
 
 bool
-hpObject::Destroy(const hpObject& ref, float delay) {
+hpObject::destroy(const hpObject& ref, float delay) {
   return false;
 }
 
-hpString 
-hpObject::ToStr() const noexcept { return mName; }
+hpString
+hpObject::to_str() const noexcept { return name; }
 
 unsigned
-hpObject::getInstanceId() const noexcept { return mInstanceId; }
+hpObject::get_instanceID() const noexcept { return instanceID; }
 
 hpString
-hpObject::getName() const noexcept { return mName; }
+hpObject::get_name() const { return name; }
 
-void hpObject::setName(hpString&& name) { mName = std::move(name); }
+void hpObject::set_name(hpString&& name) { name = std::forward<hpString>(name); }
+
 };  // namespace hp
+
+std::ostream&
+operator<<(std::ostream& ostr, hp::hpObject const& obj) noexcept {
+  constexpr unsigned len_str = (sizeof(char) * 64);
+  char str[len_str]{ };
+  sprintf_s(str, len_str,
+            " [ Name: %s, InstanceID: %zu ] ",
+            obj.get_name().get_c_str(),
+            obj.get_instanceID());
+  ostr << str;
+  return ostr;
+}

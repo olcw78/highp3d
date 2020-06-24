@@ -6,11 +6,14 @@
 #include <memory>
 
 namespace hp {
-class View final : public virtual hpIEngineScript {
+class View final
+  : public virtual hpIEngineScript {
+
+  DELETE_COPY_MOVE(View)
+
 public:
   View() noexcept;
   ~View() noexcept;
-
 
 public:
   virtual void on_start() override;

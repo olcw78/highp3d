@@ -36,8 +36,8 @@ hpOpenglCore::init(int width, int height, const char* windowName) {
   width = width;
   height = height;
 
-  if (window == nullptr) {
-    hpDebug::err("Failed to create GLFW windows!");    
+  if (window == nullptr) {    
+    hpDebug::err("Failed to initialise GLFW window!");
     return RETURN_FAILED;
   }
 
@@ -47,8 +47,8 @@ hpOpenglCore::init(int width, int height, const char* windowName) {
   glfwSetScrollCallback(window, hpCallbacks::Callback_On_Mouse_Scroll_Receive);
   glfwSetKeyCallback(window, hpCallbacks::Callback_On_Keyboard_Receive);
 
-  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    hpDebug::err("Failed to intialise the OpenGL loader (GLAD).");
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {    
+    hpDebug::err("Failed to initialise the OpenGL loader (GLAD)!");
     return RETURN_FAILED;
   }
 
@@ -66,8 +66,7 @@ void hpOpenglCore::start() {
   engine_scripts_holder->on_start();  
 }
 
-void hpOpenglCore::update() {  
-  hpDebug::err("Window is invalid!", get_wnd() != nullptr, true);
+void hpOpenglCore::update() {
   while (!glfwWindowShouldClose(get_wnd())) {
     glfwSwapBuffers(get_wnd());
     glfwPollEvents();

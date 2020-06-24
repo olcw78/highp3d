@@ -1,9 +1,9 @@
 #include "hpObject.h"
 
 namespace hp {
-template <typename CompT, typename>
+template <typename CompT, typename >
 CompT
-hpObject::Instantiate(CompT&& obj) {
+hpObject::instantiate(CompT&& obj) {
   return CompT{ std::forward<CompT>(obj) };
 }
 
