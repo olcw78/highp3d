@@ -147,11 +147,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpComponentBase.h" />
     <ClInclude Include="..\..\..\Src\highp3d\pub\hpEngineScriptHolder.h" />
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpGameObject.h" />
     <ClInclude Include="..\..\..\Src\highp3d\pub\hpIEngineScript.h" />
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpObject.h" />
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpObjectHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Src\highp3d\prv\hpEngineScriptHolder.cpp" />
+    <ClCompile Include="..\..\..\Src\highp3d\prv\hpObject.cpp" />
+    <ClCompile Include="..\..\..\Src\highp3d\prv\hpObjectHelper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Src\highp3d\pub\hpObject.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

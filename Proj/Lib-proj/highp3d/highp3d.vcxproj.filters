@@ -18,10 +18,33 @@
     <ClInclude Include="..\..\..\Src\highp3d\pub\hpEngineScriptHolder.h">
       <Filter>Src\Pub</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpGameObject.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpObject.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpObjectHelper.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Src\highp3d\pub\hpComponentBase.h">
+      <Filter>Src\Pub</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Src\highp3d\prv\hpEngineScriptHolder.cpp">
       <Filter>Src\Prv</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Src\highp3d\prv\hpObjectHelper.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Src\highp3d\prv\hpObject.cpp">
+      <Filter>Src\Prv</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Src\highp3d\pub\hpObject.inl">
+      <Filter>Src\Pub</Filter>
+    </None>
   </ItemGroup>
 </Project>

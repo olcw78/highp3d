@@ -166,3 +166,86 @@ do {delete Ptr; Ptr = nullptr; } while (Ptr!=nullptr)
 while (Ptr!=nullptr) {delete Ptr; Ptr=nullptr; }
 
 #pragma endregion
+
+
+//
+// These lines going to be included into Header at the end of development.
+// (Temporary).
+//
+
+#define Enum2UnderT(E, T) static_cast<UnderT_##E>(T)
+#define UnderT2Enum(E, T) static_cast<E>(T)
+
+#define MAKE_ENUM_FLAGS_CLASS(E)                                             \
+  template <typename E, std::enable_if_t<std::is_enum<E>::value>* = nullptr> \
+  class CLASS_##E final {                                                    \
+    typedef typename std::underlying_type<E>::type Underlying_t;             \
+                                                                             \
+   public:                                                                   \
+    CLASS_##E() = default;                                                   \
+    CLASS_##E(E flag) : Value{static_cast<Underlying_t>(flag)} { /**/        \
+    }                                                                        \
+    template <typename... Args,                                              \
+              std::enable_if_t<std::is_enum<Args...>::value>* = nullptr>     \
+    CLASS_##E(Args&&... args) {                                              \
+      Value = std::forward<Args...>(args...);                                \
+    }                                                                        \
+    CLASS_##E(std::initializer_list<E>&& flags) {                            \
+      for (auto& e : flags) {                                                \
+        Value |= static_cast<Underlying_t>(e);                               \
+      }                                                                      \
+    }                                                                        \
+    CLASS_##E& operator|(E flag) {                                           \
+      Value |= static_cast<Underlying_t>(flag);                              \
+      return *this;                                                          \
+    }                                                                        \
+    Underlying_t getValue() const { return Value; }                          \
+    bool HasFlag(E flag) const {                                             \
+      Underlying_t comp = static_cast<Underlying_t>(flag);                   \
+      return (Value & comp) == comp;                                         \
+    }                                                                        \
+                                                                             \
+   private:                                                                  \
+    Underlying_t Value;                                                      \
+  };                                                                         \
+  static __ENUM_FLAGS<E> EnumOf##E
+
+#define MAKE_ENUM_FLAGS_FUNC(E)                                              \
+  typedef typename std::underlying_type<E>::type UnderT_##E;                 \
+  inline E& operator|=(E& lhs, E rhs) {                                      \
+    return lhs = static_cast<E>(Enum2UnderT(E, lhs) |                        \
+                                Enum2UnderT(E, rhs));                        \
+  }                                                                          \
+  inline E& operator&=(E& lhs, E rhs) {                                      \
+    return lhs = static_cast<E>(Enum2UnderT(E, lhs) &                        \
+                                Enum2UnderT(E, rhs));                        \
+  }                                                                          \
+  inline E& operator^=(E& lhs, E rhs) {                                      \
+    return lhs = static_cast<E>(Enum2UnderT(E, lhs) ^                        \
+                                Enum2UnderT(E, rhs));                        \
+  }                                                                          \
+  inline constexpr E operator|(E lhs, E rhs) {                               \
+    return static_cast<E>(Enum2UnderT(E, lhs) |                              \
+                          Enum2UnderT(E, rhs));                              \
+  }                                                                          \
+  inline constexpr E operator&(E lhs, E rhs) {                               \
+    return static_cast<E>(Enum2UnderT(E, lhs) &                              \
+                          Enum2UnderT(E, rhs));                              \
+  }                                                                          \
+  inline constexpr E operator^(E lhs, E rhs) {                               \
+    return static_cast<E>(Enum2UnderT(E, lhs) ^                              \
+                          Enum2UnderT(E, rhs));                              \
+  }                                                                          \
+  inline constexpr bool operator!(E e) { return !Enum2UnderT(E, e); }        \
+  inline constexpr E operator~(E e) {                                        \
+    return static_cast<E>(~Enum2UnderT(E, e));                               \
+  }                                                                          \
+  template <typename E>                                                      \
+  inline bool HasEnumAllFlags(E flags, E contain) {                          \
+    return (Enum2UnderT(E, flags) & Enum2UnderT(E, contain)) ==              \
+           Enum2UnderT(E, contain);                                          \
+  }                                                                          \
+  template <typename E>                                                      \
+  inline bool HasEnumAnyFlag(E flags, E contain) {                           \
+    return (Enum2UnderT(E, flags) & Enum2UnderT(E, contain)) != 0;           \
+  }
