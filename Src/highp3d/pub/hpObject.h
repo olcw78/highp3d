@@ -5,8 +5,6 @@
 #include "hpString.h"
 
 //#include "ReturnValueWrapper.h"
-#include "hpObjectHelper.h"
-
 
 namespace hp {
 /// <summary>
@@ -14,7 +12,7 @@ namespace hp {
 /// </summary>
 class hpObject {
 public:
-  friend std::ostream& operator<<(std::ostream& ostr, const hpObject& obj) noexcept;
+  friend std::ostream& operator<<(std::ostream& ostr, hpObject const& obj);
   friend std::istream& operator>>(std::istream&, const hpObject&) = delete;
 
 public:
@@ -28,7 +26,7 @@ public:
 
   virtual ~hpObject() noexcept = default;
 
-  MAKE_CDTOR_COPY_MOVE_DEFAULT(hpObject)
+  MAKE_COPY_MOVE_DEFAULT(hpObject)
 
     bool operator==(const hpObject& ref) noexcept;
 

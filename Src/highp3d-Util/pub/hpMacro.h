@@ -101,6 +101,10 @@ public:\
 CLASS(CLASS<TYPE>&&) = default;\
 CLASS<TYPE>& operator=(CLASS<TYPE>&&) = default;
 
+#define MAKE_COPY_MOVE_DEFAULT(CLASS)\
+MAKE_COPY_DEFAULT(CLASS)\
+MAKE_MOVE_DEFAULT(CLASS)
+
 #define DELETE_CDTOR_COPY_MOVE(CLASS)\
 public:\
 CLASS() = delete;\

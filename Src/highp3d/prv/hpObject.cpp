@@ -1,4 +1,5 @@
 #include "../pub/hpObject.h"
+#include "../pub/hpObjectHelper.h"
 
 namespace hp {
 hpObject::hpObject() noexcept {
@@ -45,7 +46,7 @@ void hpObject::set_name(hpString&& name) { name = std::forward<hpString>(name); 
 };  // namespace hp
 
 std::ostream&
-operator<<(std::ostream& ostr, hp::hpObject const& obj) noexcept {
+operator<<(std::ostream& ostr, hp::hpObject const& obj) {
   constexpr unsigned len_str = (sizeof(char) * 64);
   char str[len_str]{ };
   sprintf_s(str, len_str,
